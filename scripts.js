@@ -88,14 +88,33 @@ function finalSignUp(){
         var data = {
             firstName   : $('#firstName').val(),
             lastName    : $('#lastName').val(),
-            dateOfBirth : Date.parse($('#dateOfBirth').val()),
+            dateOfBirth : $('#dateOfBirth').val(),
             email       : $('#email').val(),
             address     : $('#address').val(),
             postcode    : $('#postcode').val(),
             phoneNumber : $('#phoneNumber').val()
         };
         console.log(data);
-        localStorage.setItem("SignUpData", JSON.stringify(data));
+        localStorage.setItem("signUpData", JSON.stringify(data));
+
+        $("#firstName").val("");
+        $("#lastName").val("");
+        $("#email").val("");
+        $('#dateOfBirth').val("");
+        $('#address').val("");
+        $('#postcode').val("");
+        $('#phoneNumber').val("");
+
+        var savedData = localStorage.getItem('signUpData');
+        savedData = JSON.parse(savedData);
+
+        $("#firstName").val(savedData.firstName);
+        $("#lastName").val(savedData.lastName);
+        $("#email").val(savedData.email);
+        $('#dateOfBirth').val(savedData.dateOfBirth);
+        $('#address').val(savedData.address);
+        $('#postcode').val(savedData.postcode);
+        $('#phoneNumber').val(savedData.phoneNumber);
     }
 }
 
