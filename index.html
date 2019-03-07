@@ -1,0 +1,67 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <title>Registration Form</title>
+  <link type="text/css"rel="stylesheet" href="style.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript" src="scripts.js"></script>
+
+</head>
+<body>
+  <header>
+    <div class="mainHeader">
+      <div class="logo">
+        <img src="wipro-logo.png" alt="Wipro Logo ">
+      </div>
+      <div>
+        <h1 class="title">Welcome to the Wipro portal</h1>
+      </div>
+
+      <div class="menu">
+        <button id="menu-button-sign-in" class="menu-button" type="button" name="button" onclick="showSignIn()">Sign In</button>
+        <button id="menu-button-sign-up" class="menu-button-active" type="button" name="button" onclick="showSignUp()">Sign Up</button>
+      </div>
+    </div>
+  </header>
+
+  <article class="form" id="signUp1">
+    <h2>Sign up form</h2>
+    <form>
+      <fieldset>
+        First name    <input id="firstName" type="text" name="" value=""><br>
+        Last name     <input id="lastName" type="text" name="" value=""><br>
+        Email         <input id="email" type="email" name="" value=""><br>
+        Date of birth <input id="dateOfBirth" type="date" name="dateOfBirth"> <br />
+      </fieldset>
+      <button class="button" type="button" name="button" onclick="nextSignUp()">Next</button>
+    </form>
+  </article>
+  <article class="form" id="signUp2">
+    <h2>Sign up form</h2>
+    <form>
+      <fieldset>
+        Address <input id="address" type="text" name="" value=""><br>
+        Eircode <input id="postcode" type="text" name="" value=""><br>
+        Phone Number <input id="phoneNumber" type="text" placeholder="087-0000000"name="" value=""><br>
+      </fieldset>
+      <button class="button" type="button" name="button" onclick="previousSignUp()">Back</button>
+      <button class="button"type="button" name="button"  onclick="finalSignUp()">Sign up!</button>
+    </form>
+  </article>
+
+  <article class="form" id="signIn">
+    <h2>Sign in form</h2>
+    <form>
+      <fieldset>
+        Email<input type="text" name="" value=""><br>
+        Password<input type="password" name="" value=""><br>
+      </fieldset>
+      <button class="button" type="button" name="button">Sign in!</button>
+    </form>
+  </article>
+
+
+
+</body>
+</html>
