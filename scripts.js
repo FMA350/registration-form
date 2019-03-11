@@ -1,13 +1,22 @@
-var error_displayed_flag = false;
+var errorDisplayedFlags = {};
+
 const email_regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const phone_regex = /^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})$/
 
 $(document).ready(function() {
 
-  $('input').bind("focus", function(){
-      $('input').removeClass('required');
-    $('.error').remove();
-    error_displayed_flag = false;
+    // errorDisplayedFlags init
+    errorDisplayedFlags.firstName = false;
+    errorDisplayedFlags.lastName  = false;
+    errorDisplayedFlags.email     = false;
+
+
+  $('input').on("focus",  function(){
+      var name = '#'+event.target.id;
+      $(name).removeClass('required');
+      name += 'Error';
+      $(name).remove();
+      errorDisplayedFlags.getAttribute(name) = false;
   });
 });
 
@@ -20,33 +29,31 @@ function showSignUp(){
     $( "#signIn" ).css( "display", "none" );
 }
 
-function validation1(){
+function signUpFormValidation1(){
     if($('#firstName').val().length < 1){
-        if(!error_displayed_flag){
+        if(!error_displayed_flag.name){
             $('#firstName').addClass('required');
-            $('#firstName').before('<span class="error">This field is required</span>');
-            error_displayed_flag = true;
+            $('#firstName').before('<span id="firstNameError" class="error">This field is required</span>');
+            errorDisplayedFlags.firstName = true;
         }
-        return;
     }
-    else if ($('#lastName').val().length < 1) {
-        if(!error_displayed_flag){
+    if ($('#lastName').val().length < 1) {
+        if(!error_displayed_flag.lastName){
             $('#lastName').addClass('required');
-            $('#lastName').before('<span class="error">This field is required</span>');
+            $('#lastName').before('<span id="lastNameError" class="error">This field is required</span>');
             error_displayed_flag = true;
         }
-        return;
     }
-    else if (!email_regex.test($('#email').val())) {
-        if(!error_displayed_flag){
+    if (!email_regex.test($('#email').val())) {
+        if(!error_displayed_flag.email){
             $('#email').addClass('required');
             $('#email').before('<span class="error">This field is required</span>');
             error_displayed_flag = true;
         }
         return;
     }
-    else if(isNaN((Date.parse($('#dateOfBirth').val())))){
-        if(!error_displayed_flag){
+    if(isNaN((Date.parse($('#dateOfBirth').val())))){
+        if(!error_displayed_flag.dateOfBirth){
         $('#dateOfBirth').addClass('required');
         $('#dateOfBirth').before('<span class="error">This field is required</span>');
         error_displayed_flag = true;
@@ -56,7 +63,7 @@ function validation1(){
     return true;
 }
 
-function validation2(){
+function signUpFormValidation2(){
     if($('#address').val().length < 1){
         if(!error_displayed_flag){
             $('#address').addClass('required');
@@ -65,7 +72,7 @@ function validation2(){
         }
         return;
     }
-    else if($('#postcode').val().length < 1){
+    if($('#postcode').val().length < 1){
         if(!error_displayed_flag){
             $('#postcode').addClass('required');
             $('#postcode').before('<span class="error">This field is required</span>');
@@ -73,7 +80,7 @@ function validation2(){
         }
         return;
     }
-    else if(!phone_regex.test($('#phoneNumber').val())){
+    if(!phone_regex.test($('#phoneNumber').val())){
         if(!error_displayed_flag){
             $('#phoneNumber').addClass('required');
             $('#phoneNumber').before('<span class="error">This field is required</span>');
@@ -85,7 +92,7 @@ function validation2(){
 }
 
 function finalSignUp(){
-    if(validation2()){
+    if(signUpFormValidation2()){
         var data = {
             firstName   : $('#firstName').val(),
             lastName    : $('#lastName').val(),
@@ -119,7 +126,7 @@ function finalSignUp(){
 }
 
 function nextSignUp() {
-  if(validation1()){
+  if(signUpFormValidation1()){
     $( "#signUp2" ).css( "display", "block" );
     $( "#signUp1" ).css( "display", "none" );
   }
