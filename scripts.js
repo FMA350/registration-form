@@ -1,22 +1,96 @@
-var errorDisplayedFlags = {};
-
 const email_regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const phone_regex = /^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})$/
 
+var errorDisplayedFlags = {
+    firstName   : false,
+    lastName    : false,
+    email       : false,
+    dateOfBirth : false,
+    phoneNumber : false,
+    password    : false,
+
+    getAttribute: function(name){
+        switch (name) {
+            case "#firstName":
+                return this.firstName;
+                break;
+            case "#lastName":
+                return this.lastName;
+                break;
+            case "#email":
+                return this.email;
+                break;
+            case "#dateOfBirth":
+                return this.dateOfBirth;
+                break;
+            default: return null;
+        }
+    },
+    setAttribute: function(name, bool){
+        switch (name) {
+            case "#firstName":
+                this.firstName = bool;
+                break;
+            case "#lastName":
+                this.lastName = bool;
+                break;
+            case "#email":
+                this.email = bool;
+                break;
+            case "#dateOfBirth":
+                this.dateOfBirth = bool;
+                break;
+            case '#phoneNumber':
+                this.phoneNumber = bool;
+            default:
+        }
+    },
+    checkFirstFormFlags: function(){
+        return (this.firstName || this.lastName || this.email || this.dateOfBirth);
+    },
+    checkSecondFormFlags: function(){
+        return !(this.phoneNumber || this.password);
+    }
+};
+
+function dateFromToday(modifier){
+    var today = new Date();
+    var month = today.getMonth()
+    var day  = today.getDate();
+    if(month < 10){
+        month = "0" + month;
+    }
+    if(day < 10){
+        day = "0" + day;
+    }
+    return (today.getFullYear() - modifier)+'-' + month +'-'+ day;
+}
+
+function getMaxDate(){
+    return dateFromToday(18);
+}
+function getMinDate(){
+    return dateFromToday(100);
+}
+
 $(document).ready(function() {
+    //set date picker min and max date 100 and 18 years from today
+    $('#dateOfBirth').attr('max', getMaxDate());
+    $('#dateOfBirth').attr('min', getMinDate());
 
-    // errorDisplayedFlags init
-    errorDisplayedFlags.firstName = false;
-    errorDisplayedFlags.lastName  = false;
-    errorDisplayedFlags.email     = false;
-
-
+// add triggers on the input fields
   $('input').on("focus",  function(){
-      var name = '#'+event.target.id;
-      $(name).removeClass('required');
-      name += 'Error';
-      $(name).remove();
-      errorDisplayedFlags.getAttribute(name) = false;
+    //   put in the name variable the input element id that triggered the function
+        var name = '#' + event.target.id;
+        $(name).removeClass('required');
+        errorDisplayedFlags.setAttribute(name, false);
+        name += 'Error';
+        $(name).remove();
+  });
+  $('input[name=genders]').on("focus", function(){
+      $('#genderWrapper').removeClass('required');
+      errorDisplayedFlags.genders = false;
+      $('#genderWrapperError').remove();
   });
 });
 
@@ -24,82 +98,83 @@ function showSignUp(){
     $("#menu-button-sign-up").addClass('menu-button-active').removeClass('menu-button');
     $("#menu-button-sign-in").addClass('menu-button').removeClass('menu-button-active');
     $( "#signUp1" ).css( "display", "block" );
-
     $( "#signUp2" ).css( "display", "none" );
     $( "#signIn" ).css( "display", "none" );
 }
 
 function signUpFormValidation1(){
-    if($('#firstName').val().length < 1){
-        if(!error_displayed_flag.name){
+    if(!errorDisplayedFlags.firstName){
+        if($('#firstName').val().trim().length < 1){
             $('#firstName').addClass('required');
             $('#firstName').before('<span id="firstNameError" class="error">This field is required</span>');
             errorDisplayedFlags.firstName = true;
         }
     }
-    if ($('#lastName').val().length < 1) {
-        if(!error_displayed_flag.lastName){
+    if(!errorDisplayedFlags.lastName){
+        if ($('#lastName').val().trim().length < 1) {
             $('#lastName').addClass('required');
             $('#lastName').before('<span id="lastNameError" class="error">This field is required</span>');
-            error_displayed_flag = true;
+            errorDisplayedFlags.lastName = true;
         }
     }
-    if (!email_regex.test($('#email').val())) {
-        if(!error_displayed_flag.email){
+    if(!errorDisplayedFlags.email){
+        if($('#email').val().trim().length < 1){
             $('#email').addClass('required');
-            $('#email').before('<span class="error">This field is required</span>');
-            error_displayed_flag = true;
+            $('#email').before('<span id="emailError" class="error">This field is required</span>');
+            errorDisplayedFlags.email = true;
         }
-        return;
-    }
-    if(isNaN((Date.parse($('#dateOfBirth').val())))){
-        if(!error_displayed_flag.dateOfBirth){
-        $('#dateOfBirth').addClass('required');
-        $('#dateOfBirth').before('<span class="error">This field is required</span>');
-        error_displayed_flag = true;
+        else if (!email_regex.test($('#email').val())) {
+            $('#email').addClass('required');
+            $('#email').before('<span id="emailError" class="error">This is not a valid email address!</span>');
+            errorDisplayedFlags.email = true;
         }
-        return;
     }
-    return true;
+    if(!errorDisplayedFlags.dateOfBirth){
+        if(isNaN(Date.parse($('#dateOfBirth').val()))){
+            $('#dateOfBirth').addClass('required');
+            $('#dateOfBirth').before('<span id="dateOfBirthError" class="error">This field is required</span>');
+            errorDisplayedFlags.dateOfBirth = true;
+        }
+        else if(Date.parse($('#dateOfBirth').val()) < Date.parse(getMinDate())|| Date.parse($('#dateOfBirth').val()) > Date.parse(getMaxDate())){
+            $('#dateOfBirth').addClass('required');
+            $('#dateOfBirth').before('<span id="dateOfBirthError" class="error">This date is invalid!</span>');
+            errorDisplayedFlags.dateOfBirth = true;
+        }
+    }
+    return errorDisplayedFlags.checkFirstFormFlags();
 }
 
 function signUpFormValidation2(){
-    if($('#address').val().length < 1){
-        if(!error_displayed_flag){
-            $('#address').addClass('required');
-            $('#address').before('<span class="error">This field is required</span>');
-            error_displayed_flag = true;
+    if(!errorDisplayedFlags.genders){
+        if($('input[name=genders]:checked').val() == undefined){
+            $('#genderWrapper').addClass('required');
+            $('#genderWrapper').before('<span class="error" id="genderWrapperError">This field is required</span><br>');
+            errorDisplayedFlags.genders = true;
         }
-        return;
     }
-    if($('#postcode').val().length < 1){
-        if(!error_displayed_flag){
-            $('#postcode').addClass('required');
-            $('#postcode').before('<span class="error">This field is required</span>');
-            error_displayed_flag = true;
-        }
-        return;
-    }
-    if(!phone_regex.test($('#phoneNumber').val())){
-        if(!error_displayed_flag){
+    if(!errorDisplayedFlags.phoneNumber){
+        if($('#phoneNumber').val() < 1){
             $('#phoneNumber').addClass('required');
-            $('#phoneNumber').before('<span class="error">This field is required</span>');
-            error_displayed_flag = true;
+            $('#phoneNumber').before('<span class="error "id="phoneNumberError">This field is required</span>');
+            errorDisplayedFlags.phoneNumber = true;
         }
-        return;
+        else if(!phone_regex.test($('#phoneNumber').val())){
+            $('#phoneNumber').addClass('required');
+            $('#phoneNumber').before('<span class="error "id="phoneNumberError">Invalid number</span>');
+            errorDisplayedFlags.phoneNumber = true;
+        }
     }
-    return true;
+    return errorDisplayedFlags.checkSecondFormFlags();
 }
 
 function finalSignUp(){
     if(signUpFormValidation2()){
         var data = {
-            firstName   : $('#firstName').val(),
-            lastName    : $('#lastName').val(),
+            firstName   : $('#firstName').val().trim(),
+            lastName    : $('#lastName').val().trim(),
             dateOfBirth : $('#dateOfBirth').val(),
-            email       : $('#email').val(),
-            address     : $('#address').val(),
-            postcode    : $('#postcode').val(),
+            email       : $('#email').val().trim(),
+            // TODO
             phoneNumber : $('#phoneNumber').val()
         };
         localStorage.setItem("signUpData", JSON.stringify(data));
@@ -108,8 +183,6 @@ function finalSignUp(){
         $("#lastName").val("");
         $("#email").val("");
         $('#dateOfBirth').val("");
-        $('#address').val("");
-        $('#postcode').val("");
         $('#phoneNumber').val("");
 
         var savedData = localStorage.getItem('signUpData');
@@ -119,8 +192,7 @@ function finalSignUp(){
         $("#lastName").val(savedData.lastName);
         $("#email").val(savedData.email);
         $('#dateOfBirth').val(savedData.dateOfBirth);
-        $('#address').val(savedData.address);
-        $('#postcode').val(savedData.postcode);
+
         $('#phoneNumber').val(savedData.phoneNumber);
     }
 }
