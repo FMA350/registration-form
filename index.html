@@ -1,12 +1,10 @@
+
+<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8" />
   <title>Registration Form</title>
   <link type="text/css"rel="stylesheet" href="style.css">
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script type="text/javascript" src="scripts.js"></script>
-
 </head>
 <body>
   <header>
@@ -24,7 +22,7 @@
       </div>
     </div>
   </header>
-
+<div class="wrapper">
   <article class="form" id="signUp1">
     <h2>Sign up form</h2>
     <form>
@@ -46,8 +44,8 @@
                             Female<input type="radio" class="radio" name="genders" id="genderFemale"value="female">
                             Male<input type="radio" class="radio" name="genders" id="genderMale" value="male"> <br>
             <div> Phone Number <input id="phoneNumber" type="tel" placeholder="087-0000000"name="" value=""></div><br>
-            <div>Choose your password <input  id="password1" type="password"><br>
-            <div>Confirm your password <input id="password2" type="password"><br>
+            <div>Choose your password <input  id="password1" type="password"></div><br>
+            <div>Confirm your password <input id="password2" type="password"></div><br>
         </fieldset>
       <button class="button" type="button" name="button" onclick="previousSignUp()">Back</button>
       <button class="button" type="button" name="button"  onclick="finalSignUp()">Sign up!</button>
@@ -57,11 +55,16 @@
     <h2>Sign in form</h2>
     <form>
       <fieldset>
-        Email<input type="text" name="" value=""><br>
-        Password<input type="password" name="" value=""><br>
+        Email<input type="text" id="signInEmail" placeholder="yourname@yourdomain.com"><br>
+        Password<input type="password" id="signInPassword"><br>
       </fieldset>
-      <button class="button" type="button" name="button">Sign in!</button>
+      <button class="button" type="button" name="button"onclick="signIn()">Sign in!</button>
     </form>
   </article>
+</div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha3/0.8.0/sha3.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript" src="scripts.js"></script>
 </body>
 </html>
