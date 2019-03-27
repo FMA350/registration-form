@@ -6,7 +6,7 @@ html, body {
 
 body{
   color: #3a8a9e;
-  background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6) ), url("background.jpg");
+   background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6) ), url("background.jpg");
    background-position: center;
    background-size: cover;
    background-repeat: no-repeat;
@@ -51,6 +51,13 @@ input {
 .radio{
     width: auto;
     display: inline;
+    margin-right:20px;
+    margin-left: 2px;
+}
+.radioParagraph{
+    margin-left: 5px;
+    margin-right: 5px;
+    display: inline;
 }
 
 .wrapper {
@@ -78,7 +85,7 @@ input {
 }
 
 .mainHeader div {
-  flex:auto;
+  flex: 1 1 0;
   text-align: center;
 }
 
@@ -122,11 +129,11 @@ input {
 }
 
 .form.animatedIn{
-    animation: 1.5s slideIn;
+    animation: 0.75s slideIn;
 }
 
 .form.animatedOut{
-    animation: 1.5s slideOut;
+    animation: 0.75s slideOut;
 }
 
 .form h2{
@@ -140,12 +147,31 @@ input {
 
 
 .button {
-	background-color:#eae0c2;
-	border-radius:12px;
-	/*border:1px solid #333029;*/
+	background-color:#708EA4;
+	border-radius:15px;
+	border:1px solid #d6bcd6;
 	display:inline-block;
 	cursor:pointer;
-	color:#505739;
+	color:#032137;
+	font-family:Times New Roman;
+	font-size:20px;
+	font-weight:bold;
+	padding:7px 25px;
+	text-decoration:none;
+    transition: 0.5s;
+}
+
+.button:hover {
+	background-color:#8F94A0;
+}
+
+.button-back{
+    background-color: transparent;
+	border-radius:12px;
+	border:1px solid #032137;
+	display:inline-block;
+	cursor:pointer;
+	color:#032137;
 	font-family:Times New Roman;
 	font-size:20px;
 	font-weight:bold;
@@ -153,18 +179,17 @@ input {
 	text-decoration:none;
     transition: 0.5s;
 }
-.button:hover {
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#b5a579', endColorstr='#eae0c2',GradientType=0);
-	background-color:#b5a579;
+
+.button-back:hover {
+	background-color:#486D88;
 }
+
 .button:active {
 	position:relative;
 	top:1px;
 }
 .menu-button {
 	background-color:#ededed;
-	-moz-border-radius:15px;
-	-webkit-border-radius:15px;
 	border-radius:15px;
 	border:1px solid #d6bcd6;
 	display:inline-block;
@@ -207,27 +232,27 @@ input {
     transition: all 1.0s ease-out;
 }
 
+.buttonError{
+    background: rgb(255,0,0,0.25);
+    transition: all .5s ease-out;
+}
+
 .error{
-    color: #ff0000;
+    color: #ae0000;
+    animation: 0.75s fadeIn;
+    transition: all 1.0s ease-out;
 }
 
 #signIn, #signUp2{
     display: none;
-}
-.form.animatedIn{
-    animation: 1.5s slideIn;
-}
-
-.form.animatedOut{
-    animation: 1.5s slideOut;
 }
 
 @keyframes slideIn {
     0% {
         left: -1250px;
     }
-    100% {
-          left: 29%;
+    100%{
+        left: 29%;
     }
 }
 
@@ -240,14 +265,49 @@ input {
     }
 }
 
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    33%{
+        opacity: 0.50;
+    }
+    66%{
+        opacity: 0.75;
+    }
+    100% {
+        opacity: 1;
+      }
+}
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
 
 @media only screen and (max-width: 1300px) {
+    body{
+        background-color: rgba(221, 221, 221, 1);
+    }
 
     header{
+        background-color: rgb(211,211,211, 1);
         max-height: none;
     }
+    .mainHeader{
+        background-color: rgb(211,211,211, 1);
+        max-height: none;
+    }
+
+    .wrapper{
+            background-color: rgb(211,211,211, 1);
+    }
+
     .form{
-        margin: auto;
         float: left;
         text-align: right;
         width: 100%;
@@ -265,34 +325,11 @@ input {
         transition: transform 1.8s;
     }
     .form.animatedIn{
-        animation: 1.5s slideIn;
+        animation: .75s fadeIn;
     }
 
     .form.animatedOut{
-        animation: 1.5s slideOut;
-    }
-    @keyframes slideIn {
-        0% {
-            opacity: 0;
-        }
-        33%{
-            opacity: 0;
-        }
-        66%{
-            display: block;
-            opacity: 0;
-        }
-        100% {
-            opacity: 1;
-          }
-    }
-    @keyframes slideOut {
-        0% {
-            opacity: 1;
-        }
-        100% {
-            opacity: 0;
-        }
+        animation: 0.75s fadeOut;
     }
 
 }

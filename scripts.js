@@ -4,6 +4,7 @@
 const email_regex = /^.+@\w+\.\w{2,3}$/;
 const phone_regex = /^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})$/
 
+let time = 750;
 let errorDisplayedFlags = {
     firstName   : false,
     lastName    : false,
@@ -117,24 +118,27 @@ $(document).ready(function(){
 });
 
 function showSignUp(){
-    if($( "#signUp1" ).css( "display")== 'block'){
+    if($( "#signUp1" ).css("display")=='block'){
         return;
     }
     $("#menu-button-sign-up").addClass('menu-button-active').removeClass('menu-button');
     $("#menu-button-sign-in").addClass('menu-button').removeClass('menu-button-active');
 
-    $( "#signUp1" ).css( "display", "block" );
-    $("#signUp1").addClass('animatedIn');
     $("#signUp2").addClass('animatedOut');
     $("#signIn").addClass('animatedOut');
 
     setTimeout(function() {
-      $("#signUp1").removeClass('animatedIn');
+      $( "#signUp1" ).css( "display", "block" );
+      $("#signUp1").addClass('animatedIn');
+
       $("#signUp2").removeClass('animatedOut');
       $("#signIn").removeClass('animatedOut');
       $( "#signUp2" ).css( "display", "none" );
       $( "#signIn" ).css( "display", "none" );
-    }, 1500);
+  }, time);
+    setTimeout(function() {
+        $("#signUp1").removeClass('animatedIn');
+    }, time*2);
 }
 
 function signUpFormValidation1(){
@@ -223,7 +227,7 @@ function signUpFormValidation2(){
     return errorDisplayedFlags.checkSecondFormFlags();
 }
 
-function finalSignUp(){
+function signUp(){
     if(signUpFormValidation2()){
         let data = {
             firstName   : $('#firstName').val().trim(),
@@ -257,51 +261,67 @@ function finalSignUp(){
     }
 }
 
-function nextSignUp() {
-  if(signUpFormValidation1()){
-    $( "#signUp2" ).css( "display", "block" );
-
-    $("#signUp2").addClass('animatedIn');
-    $("#signUp1").addClass('animatedOut');
-    setTimeout(function() {
-      $("#signUp2").removeClass('animatedIn');
-      $("#signUp1").removeClass('animatedOut');
-      $( "#signUp1" ).css( "display", "none" );
-    }, 1500);
-  }
+function showNextSignUp() {
+    if(signUpFormValidation1()){
+        $("#signUp2").addClass('animatedIn');
+        $("#signUp1").addClass('animatedOut');
+        setTimeout(function() {
+          $("#signUp1").removeClass('animatedOut');
+          $( "#signUp1" ).css( "display", "none" );
+          $( "#signUp2" ).css( "display", "block" );
+        }, time);
+        setTimeout(function() {
+            $("#signUp2").removeClass('animatedIn');
+        }, time*2);
+    }
+    else{
+        $('#backButton').addClass('buttonError');
+        setTimeout(function(){
+            $('#backButton').removeClass('buttonError');
+        }, 1000);
+    }
 }
 
-function previousSignUp(){
-  $( "#signUp1" ).css( "display", "block" );
-  $("#signUp1").addClass('animatedIn');
-  $("#signUp2").addClass('animatedOut');
-  setTimeout(function() {
-    $("#signUp1").removeClass('animatedIn');
-    $("#signUp2").removeClass('animatedOut');
+function showPreviousSignUp(){
+
+    $("#signUp1").addClass('animatedIn');
+    $("#signUp2").addClass('animatedOut');
+    setTimeout(function() {
     $( "#signUp2" ).css( "display", "none" );
-  }, 1500);
+    $( "#signUp1" ).css( "display", "block" );
+    $("#signUp2").removeClass('animatedOut');
+    }, time);
+  setTimeout(function() {
+      $("#signUp1").removeClass('animatedIn');
+  }, time*2);
+
 }
 
 function showSignIn(){
+    // if sign in is already present, do nothing
     if($( "#signIn" ).css( "display") == 'block'){
         return;
     }
-
+    // change button style
     $("#menu-button-sign-up").addClass('menu-button').removeClass('menu-button-active');
     $("#menu-button-sign-in").addClass('menu-button-active').removeClass('menu-button');
+    // create animation for the signup forms
 
-    $("#signIn" ).css( "display", "block" );
-    $("#signIn").addClass('animatedIn');
     $("#signUp2").addClass('animatedOut');
     $("#signUp1").addClass('animatedOut');
 
     setTimeout(function() {
-      $("#signIn").removeClass('animatedIn');
-      $( "#signUp1" ).css( "display", "none" );
-      $( "#signUp2" ).css( "display", "none" );
-      $("#signUp1").removeClass('animatedOut');
-      $("#signUp2").removeClass('animatedOut');
-    }, 1500);
+        $( "#signUp1" ).css( "display", "none" );
+        $( "#signUp2" ).css( "display", "none" );
+        $("#signUp1").removeClass('animatedOut');
+        $("#signUp2").removeClass('animatedOut');
+
+        $("#signIn").addClass('animatedIn');
+        $("#signIn" ).css( "display", "block" );
+  }, time);
+  setTimeout(function() {
+        $("#signIn").removeClass('animatedIn');
+  }, time*2);
 }
 
 function signIn(){
