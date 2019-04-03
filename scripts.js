@@ -233,6 +233,7 @@ function signUp(){
             gender      : $("input[name='genders']:checked").val(),
             phoneNumber : $('#phoneNumber').val(),
             password    : sha3_384($('#password1').val()),
+            lastLogin   : new Date()
         };
         localStorage.setItem($('#email').val().trim(), JSON.stringify(data));
         // clearing fields
@@ -326,9 +327,11 @@ function signIn(){
         return;
     }
     showLoginPane(savedData);
+    savedData.lastLogin = new Date();
 }
 
 function showSignUpPane(txt){
+    // Create the signUp pane that will show when the user completes the signup
     let alertPane = "<div id='pane' class='pane'><h2>"+ txt.firstName +"has signed up!</h2><br><br><div>Signup information:</div><br><div>First Name: "+txt.firstName+"</div><br>\
     <div>Last Name: "+txt.lastName+"</div><br> <div>Email: "+txt.email+"</div><br> <div>Date of birth: "+txt.dateOfBirth+"</div><br>\
     <button class='button' onclick='closePane()'>Proceed to the portal</button></div>"
@@ -336,7 +339,10 @@ function showSignUpPane(txt){
 }
 
 function showLoginPane(txt) {
-    let alertPane = "<div id='pane' class='pane'><h2>Welcome "+ txt.firstName +"<br><br><div>you last access was yesterday at 12:03</div></h2><button \
+    let lastLogin = new Date(txt.lastLogin);
+    // Creates a pane for the signin.
+    let alertPane = "<div id='pane' class='pane'><h2>Welcome "+ txt.firstName +"<br><br><div>you last access was the "+lastLogin.getDay() +" - "+(lastLogin.getMonth() +1)+" - "+
+    lastLogin.getFullYear()+" at "+lastLogin.getHours()+":"+lastLogin.getMinutes()+".</div></h2><button \
     class='button' onclick='closePane()'>Proceed to the portal</button></div>"
     $(".wrapper").append(alertPane);
 }
