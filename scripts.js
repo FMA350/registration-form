@@ -1,8 +1,10 @@
-// const email_regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-// const ALERT_TITLE = "Oops!";
-// const ALERT_BUTTON_TEXT = "Ok";
-const email_regex = /^.+@\w+\.\w{2,3}$/;
-const phone_regex = /^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})$/
+//  add comments
+//  create popup for login / signup
+// fix current media queries and add new ones
+// use single signup form
+
+
+
 
 let time = 750;
 let errorDisplayedFlags = {
@@ -64,13 +66,9 @@ let errorDisplayedFlags = {
             default:
         }
     },
-    checkFirstFormFlags:function(){
-        return !(this.firstName || this.lastName || this.email || this.dateOfBirth);
+    noErrors:function(){
+        return !(this.firstName || this.lastName || this.email || this.dateOfBirth || this.gender || this.phoneNumber || this.password1 || this.password2);
     },
-
-    checkSecondFormFlags: function(){
-        return !(this.gender || this.phoneNumber || this.password1 || this.password2);
-    }
 };
 
 function dateFromToday(modifier){
@@ -114,7 +112,6 @@ $(document).ready(function(){
       errorDisplayedFlags.genders = false;
       $('#genderWrapperError').remove();
   });
-
 });
 
 function showSignUp(){
@@ -141,7 +138,7 @@ function showSignUp(){
     }, time*2);
 }
 
-function signUpFormValidation1(){
+function signUpFormValidation(){
     if(!errorDisplayedFlags.firstName){
         if($('#firstName').val().trim().length < 1){
             $('#firstName').addClass('required');
@@ -180,10 +177,6 @@ function signUpFormValidation1(){
             errorDisplayedFlags.dateOfBirth = true;
         }
     }
-    return errorDisplayedFlags.checkFirstFormFlags();
-}
-
-function signUpFormValidation2(){
     if(!errorDisplayedFlags.genders){
         if($('input[name=genders]:checked').val() == undefined){
             $('#genderWrapper').addClass('required');
@@ -224,11 +217,14 @@ function signUpFormValidation2(){
             $('#password2').before('<span class="error "id="password2Error">The passwords do not match!</span>');
             errorDisplayedFlags.password2 = true;
         }
-    return errorDisplayedFlags.checkSecondFormFlags();
+
+
+
+    return errorDisplayedFlags.noErrors();
 }
 
 function signUp(){
-    if(signUpFormValidation2()){
+    if(signUpFormValidation()){
         let data = {
             firstName   : $('#firstName').val().trim(),
             lastName    : $('#lastName').val().trim(),
@@ -238,9 +234,8 @@ function signUp(){
             phoneNumber : $('#phoneNumber').val(),
             password    : sha3_384($('#password1').val()),
         };
-
         localStorage.setItem($('#email').val().trim(), JSON.stringify(data));
-
+        // clearing fields
         $("#firstName").val("");
         $("#lastName").val("");
         $("#email").val("");
@@ -250,14 +245,9 @@ function signUp(){
         $('#password1').val("");
         $('#password2').val("");
 
-        let savedData = localStorage.getItem('signUpData');
+        let savedData = localStorage.getItem(data.email);
         savedData = JSON.parse(savedData);
-
-        // $("#firstName").val(savedData.firstName);
-        // $("#lastName").val(savedData.lastName);
-        // $("#email").val(savedData.email);
-        // $('#dateOfBirth').val(savedData.dateOfBirth);
-        // $('#phoneNumber').val(savedData.phoneNumber);
+        showSignUpPane(savedData);
     }
 }
 
@@ -328,52 +318,29 @@ function signIn(){
     let email = $('#signInEmail').val();
     let savedData = JSON.parse(localStorage.getItem(email));
     if(savedData == undefined){
-        //TODO: show error
+        alert("Wrong username or password");
         return;
     }
     if(savedData.password != sha3_384($('#signInPassword').val())){
-        //TODO:  print error
+        alert("Wrong username or password");
         return;
     }
-
-    console.log(`${savedData.firstName} has logged in`);
-    alert("User has logged in");
-    // user has logged in!
-
+    showLoginPane(savedData);
 }
 
-function createCustomAlert(txt) {
-	d = document;
-
-	if(d.getElementById("modalContainer")) return;
-
-	mObj = d.getElementsByTagName("body")[0].appendChild(d.createElement("div"));
-	mObj.id = "modalContainer";
-	mObj.style.height = d.documentElement.scrollHeight + "px";
-
-	alertObj = mObj.appendChild(d.createElement("div"));
-	alertObj.id = "alertBox";
-	if(d.all && !window.opera) alertObj.style.top = document.documentElement.scrollTop + "px";
-	alertObj.style.left = (d.documentElement.scrollWidth - alertObj.offsetWidth)/2 + "px";
-	alertObj.style.visiblity="visible";
-
-	h1 = alertObj.appendChild(d.createElement("h1"));
-	h1.appendChild(d.createTextNode(ALERT_TITLE));
-
-	msg = alertObj.appendChild(d.createElement("p"));
-	msg.innerHTML = txt;
-
-	btn = alertObj.appendChild(d.createElement("a"));
-	btn.id = "closeBtn";
-	btn.appendChild(d.createTextNode(ALERT_BUTTON_TEXT));
-	btn.href = "#";
-	btn.focus();
-	btn.onclick = function() { removeCustomAlert();return false; }
-
-	alertObj.style.display = "block";
-
+function showSignUpPane(txt){
+    let alertPane = "<div id='pane' class='pane'><h2>"+ txt.firstName +"has signed up!</h2><br><br><div>Signup information:</div><br><div>First Name: "+txt.firstName+"</div><br>\
+    <div>Last Name: "+txt.lastName+"</div><br> <div>Email: "+txt.email+"</div><br> <div>Date of birth: "+txt.dateOfBirth+"</div><br>\
+    <button class='button' onclick='closePane()'>Proceed to the portal</button></div>"
+    $(".wrapper").append(alertPane);
 }
 
-function removeCustomAlert() {
-	document.getElementsByTagName("body")[0].removeChild(document.getElementById("modalContainer"));
+function showLoginPane(txt) {
+    let alertPane = "<div id='pane' class='pane'><h2>Welcome "+ txt.firstName +"<br><br><div>you last access was yesterday at 12:03</div></h2><button \
+    class='button' onclick='closePane()'>Proceed to the portal</button></div>"
+    $(".wrapper").append(alertPane);
+}
+
+function closePane(){
+    $('#pane').remove();
 }
