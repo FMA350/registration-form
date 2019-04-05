@@ -1,12 +1,3 @@
-//  add comments
-//  create popup for login / signup
-// fix current media queries and add new ones
-// use single signup form
-
-
-
-
-let time = 750;
 let errorDisplayedFlags = {
     firstName   : false,
     lastName    : false,
@@ -67,6 +58,7 @@ let errorDisplayedFlags = {
         }
     },
     noErrors:function(){
+        // checks if any of the error flags is set to true. Returns true if there are no errors, false if one or more are present
         return !(this.firstName || this.lastName || this.email || this.dateOfBirth || this.gender || this.phoneNumber || this.password1 || this.password2);
     },
 };
@@ -115,30 +107,28 @@ $(document).ready(function(){
 });
 
 function showSignUp(){
-    if($( "#signUp1" ).css("display")=='block'){
+    if($( "#signUp" ).css("display")=='block'){
         return;
     }
     $("#menu-button-sign-up").addClass('menu-button-active').removeClass('menu-button');
     $("#menu-button-sign-in").addClass('menu-button').removeClass('menu-button-active');
 
-    $("#signUp2").addClass('animatedOut');
     $("#signIn").addClass('animatedOut');
 
     setTimeout(function() {
-      $( "#signUp1" ).css( "display", "block" );
-      $("#signUp1").addClass('animatedIn');
+      $( "#signUp" ).css( "display", "block" );
+      $("#signUp").addClass('animatedIn');
 
-      $("#signUp2").removeClass('animatedOut');
       $("#signIn").removeClass('animatedOut');
-      $( "#signUp2" ).css( "display", "none" );
       $( "#signIn" ).css( "display", "none" );
   }, time);
     setTimeout(function() {
-        $("#signUp1").removeClass('animatedIn');
+        $("#signUp").removeClass('animatedIn');
     }, time*2);
 }
 
 function signUpFormValidation(){
+    // function that performs field validation.
     if(!errorDisplayedFlags.firstName){
         if($('#firstName').val().trim().length < 1){
             $('#firstName').addClass('required');
@@ -217,13 +207,11 @@ function signUpFormValidation(){
             $('#password2').before('<span class="error "id="password2Error">The passwords do not match!</span>');
             errorDisplayedFlags.password2 = true;
         }
-
-
-
     return errorDisplayedFlags.noErrors();
 }
 
 function signUp(){
+    // Function that saves the user data on local storage and clears up the input fields
     if(signUpFormValidation()){
         let data = {
             firstName   : $('#firstName').val().trim(),
@@ -252,42 +240,6 @@ function signUp(){
     }
 }
 
-function showNextSignUp() {
-    if(signUpFormValidation1()){
-        $("#signUp2").addClass('animatedIn');
-        $("#signUp1").addClass('animatedOut');
-        setTimeout(function() {
-          $("#signUp1").removeClass('animatedOut');
-          $( "#signUp1" ).css( "display", "none" );
-          $( "#signUp2" ).css( "display", "block" );
-        }, time);
-        setTimeout(function() {
-            $("#signUp2").removeClass('animatedIn');
-        }, time*2);
-    }
-    else{
-        $('#backButton').addClass('buttonError');
-        setTimeout(function(){
-            $('#backButton').removeClass('buttonError');
-        }, 1000);
-    }
-}
-
-function showPreviousSignUp(){
-
-    $("#signUp1").addClass('animatedIn');
-    $("#signUp2").addClass('animatedOut');
-    setTimeout(function() {
-    $( "#signUp2" ).css( "display", "none" );
-    $( "#signUp1" ).css( "display", "block" );
-    $("#signUp2").removeClass('animatedOut');
-    }, time);
-  setTimeout(function() {
-      $("#signUp1").removeClass('animatedIn');
-  }, time*2);
-
-}
-
 function showSignIn(){
     // if sign in is already present, do nothing
     if($( "#signIn" ).css( "display") == 'block'){
@@ -298,14 +250,11 @@ function showSignIn(){
     $("#menu-button-sign-in").addClass('menu-button-active').removeClass('menu-button');
     // create animation for the signup forms
 
-    $("#signUp2").addClass('animatedOut');
-    $("#signUp1").addClass('animatedOut');
+    $("#signUp").addClass('animatedOut');
 
     setTimeout(function() {
-        $( "#signUp1" ).css( "display", "none" );
-        $( "#signUp2" ).css( "display", "none" );
-        $("#signUp1").removeClass('animatedOut');
-        $("#signUp2").removeClass('animatedOut');
+        $( "#signUp" ).css( "display", "none" );
+        $("#signUp").removeClass('animatedOut');
 
         $("#signIn").addClass('animatedIn');
         $("#signIn" ).css( "display", "block" );
@@ -316,12 +265,15 @@ function showSignIn(){
 }
 
 function signIn(){
+    // retrieve the data associated with the user email and store it in saved data
     let email = $('#signInEmail').val();
     let savedData = JSON.parse(localStorage.getItem(email));
+    // if data is not present
     if(savedData == undefined){
         alert("Wrong username or password");
         return;
     }
+    // if password hashes do not match
     if(savedData.password != sha3_384($('#signInPassword').val())){
         alert("Wrong username or password");
         return;
